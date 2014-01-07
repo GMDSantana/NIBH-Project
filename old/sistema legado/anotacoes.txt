@@ -1,0 +1,78 @@
+Additional:
+SG_Final = [S]tring [G]rid
+
+Dialogs:
+OD_Dados = [O]pen [D]ialog
+SV_Dados = [S]ave [D]ialog
+
+Radio Groups:
+RG_leitura = [R]adio [G]roup
++2 radio buttons
+
+=======================================
+
+TForm1 é a classe do padrão.
+.:. TFPrincipal é a classe do hidro.cpp
+
+A sintaxe do CPP Builder de chamar funçÕes é da forma:
+
+classe::MethodName()
+Ex: TForm1::Soma()
+ou, no hidro.cpp:
+Ex: void TFPrincipal::libera_memoria()
+
+
+SOBRE O .H
+>>>ISSO:
+
+//---------------------------------------------------------------------------
+
+#ifndef Unit1H
+#define Unit1H
+//---------------------------------------------------------------------------
+#include <Classes.hpp>
+#include <Controls.hpp>
+#include <StdCtrls.hpp>
+#include <Forms.hpp>
+//---------------------------------------------------------------------------
+class TForm1 : public TForm
+{
+__published:	// IDE-managed Components
+private:	// User declarations
+public:		// User declarations
+        __fastcall TForm1(TComponent* Owner);
+         methodName();
+};
+//---------------------------------------------------------------------------
+extern PACKAGE TForm1 *Form1;
+//---------------------------------------------------------------------------
+#endif
+
+//---------------------------------------------------------------------------
+
+
+>>>É IGUAL A:
+
+#include <vcl.h>
+#pragma hdrstop
+
+#include "Unit1.h"
+//---------------------------------------------------------------------------
+#pragma package(smart_init)
+#pragma resource "*.dfm"
+TForm1 *Form1;
+//---------------------------------------------------------------------------
+__fastcall TForm1::TForm1(TComponent* Owner)
+        : TForm(Owner)
+{
+}
+//---------------------------------------------------------------------------
+
+void TForm1::methodName()
+{
+        //TODO: Add your source code here
+}
+
+void Soma(){
+printf("Soma.");
+}
