@@ -1,6 +1,12 @@
 
-brain:	brain.c forecast.c
-	gcc -o brain brain.c -lm
+brain:	brain.o
+	gcc -o brain brain.o -lm
+
+brain.o: brain.c
+	gcc -c brain.c
+
+forecast.o: forecast.c
+	gcc -c forecast.c
 
 
 clean:
