@@ -183,7 +183,7 @@ int main()
     DBConn = DBConnect();
     if (DBConn == NULL) // Erro
     {
-        printf("\nErro no retorno da conexao com 'banco'.");
+        printf("\nErro no retorno da conexao com <banco>\n");
         return 1;
     }
 
