@@ -5,6 +5,7 @@
 */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include "forecast.h"
 #include "brain.h"
@@ -69,7 +70,7 @@ int LoadDBData(FILE *inFile, stationData *stat_F, double *pobs_F)
 
     while( c != '\n' && c != EOF ){ //le caractere por caractere ate o final da linha, armazenando os valores nas devidas variaveis
         c = fgetc(inFile);
-        if(c != ','){
+        if(c != ',' && c!= '\n' && linhaInvalida != 1){
             switch(dadoSendoLido){
                 case 1: //primeiro dado a ser lido: numero da estacao
                     if(c == '2') //se for a estacao 2, a flag linhaInvalida eh acionada porque a linha nao contem os dados completos
@@ -129,7 +130,9 @@ int LoadDBData(FILE *inFile, stationData *stat_F, double *pobs_F)
     stat_F->umidade = atof(umidade);
     stat_F->pressao = atof(pressao);
     *pobs_F = atof(pobs);
-
+    // Printf apresentando os valores corretamente recebidos pelas variaveis.
+    printf("\nYear: %d, Date: %d, Time: %d, Temperatura: %.1f, Umidade: %.1f, Pressao: %.1f, Pobs: %.0f\n", stat_F->year, stat_F->date, stat_F->time, stat_F->temperatura, stat_F->umidade, stat_F->pressao, *pobs_F);
+    system("pause");
     //radar, ifs..
     stat_F->topoDosEcos = -1;
     stat_F->VIL = -1;
@@ -157,8 +160,8 @@ FILE *DBConnect()
             return estFile; // Erro repassado a main
         }
         else{ // Se for possivel abrir o arqivo, retorna ponteiro a main
-                printf("%d", estFile);
-            printf("\n%p", estFile);
+                //printf("%d", estFile);
+           // printf("\n%p", estFile);
             return estFile;
         }
     }
