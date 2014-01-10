@@ -6,7 +6,7 @@
 
 #include <stdio.h>
 #include <unistd.h>
-#include "forecast.c"
+#include "forecast.h"
 #include "brain.h"
 
 /* *******************************
