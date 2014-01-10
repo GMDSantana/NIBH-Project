@@ -4,6 +4,7 @@
 #include <math.h>
 #include <time.h>
 #include "brain.h"
+#include "forecast.h"
 
 /// mudar #define para const int/float/double, etc..
 /// checar quais valores podem assumir quais tipos de variaveis
@@ -13,20 +14,20 @@
 #define PN 100000 //Pressao nominal 10^5 Kg/(m.s2)
 #define A 2500000 //Constante da eq. (14) do calor latente A=2,5.10^6 J/Kg
 #define B 2380 //Constante da eq. (14) do calor latente B=2,38.10^3 J/(Kg.K)
-#define CP 1004 //Calor especifico à pressao constante cp=1004 J/(kg.K)
-#define DA 1 //Diferencial de área dA
+#define CP 1004 //Calor especifico Ã  pressao constante cp=1004 J/(kg.K)
+#define DA 1 //Diferencial de Ã¡rea dA
 #define ALFA 3500 //3500 s-1
-#define TAST 273.15 //T* [ºK] eq 42
+#define TAST 273.15 //T* [ÂºK] eq 42
 #define PAST 101325 //p* [kg/(m*s2) eq 42
 #define C1 700000 //C1 [kg/(m3.s2)] pag 1593
-#define RV 461 //Constante dos gases para vapor de água [J/(kg.K)] pag 1592
+#define RV 461 //Constante dos gases para vapor de Ã¡gua [J/(kg.K)] pag 1592
 #define R 287 //J/(K.Kg)
-#define G 9.81 //Aceleração da gravidade m/s2
+#define G 9.81 //AceleraÃ§Ã£o da gravidade m/s2
 #define K 0 //Considerado pag 1602
 #define GAMA 1
-//abstraídos: ifs de tempo/hora // linha/total_linha // altura // parametros de entrada
+//abstraÃ­dos: ifs de tempo/hora // linha/total_linha // altura // parametros de entrada
 
-// typedef struct stationData stationData;
+typedef struct stationData stationData;
 
 float f(float T, float p)
 {
@@ -97,7 +98,7 @@ int SaveResults(stationData stat, double P)
     fclose(outFile);
 
     return 1;
-    // Abre (ou cria se não houver) arquivo de saida em ASCII
+    // Abre (ou cria se nÃ£o houver) arquivo de saida em ASCII
     // Vai ao fim do arquivo
     // Adiciona dados formatados para o SWMM no final do arquivo
     // Fecha arquivo
@@ -122,12 +123,12 @@ double Georgakakos(stationData stat, double pobs, int *iteracao)
     float pt;
     double wst;
     double teta; //temperatura potencial teta
-    float L; //Calor latente de condensação
+    float L; //Calor latente de condensaÃ§Ã£o
     double tetaE1;//temperatura potencial teta e
     float umI; //Entrada de umidade I
     float nv; //Adimensional de velocidade
     float vbeta; //Velocidade v beta
-    float c; //Inverso do diâmetro médio
+    float c; //Inverso do diÃ¢metro mÃ©dio
     double dast; //D* [equacao 42]
     double P; //PWV (precipitacao acumulada?)
     double obs;
@@ -172,7 +173,7 @@ double Georgakakos(stationData stat, double pobs, int *iteracao)
     double e2 = 62725.067;
     double e3 = 0.95496;
     double e4 = 0.000288;
-    int limitVIL = 0; //se 1, desconsidera valores de VIL < 3 kg/m². [C99 nao suporta tipo boolean, mas limitVIL receberia 0 ou 1]
+    int limitVIL = 0; //se 1, desconsidera valores de VIL < 3 kg/mÂ². [C99 nao suporta tipo boolean, mas limitVIL receberia 0 ou 1]
 
     X[0] = 1; //x inicial
 
@@ -181,9 +182,9 @@ double Georgakakos(stationData stat, double pobs, int *iteracao)
     es = ( ur / 100 ) * (A1 * ( pow ( temperatura - 223.15, 3.5) ) ); // pow(x,3.15) == x^3.15
     td = pow((es/A1),(1/3.5))+223.15;
 
- /* [Avaliar o grau de saturação do ar na superfície. Se w0 < wss o ar não
-  * está saturado e a ascensão é adiabática, caso contrário, desde a
-  * superfície a taxa de decaimento da temperatura é pseudo adiabática.] */
+ /* [Avaliar o grau de saturaÃ§Ã£o do ar na superfÃ­cie. Se w0 < wss o ar nÃ£o
+  * estÃ¡ saturado e a ascensÃ£o Ã© adiabÃ¡tica, caso contrÃ¡rio, desde a
+  * superfÃ­cie a taxa de decaimento da temperatura Ã© pseudo adiabÃ¡tica.] */
 
     wo = ( 0.622 * ( A1 * pow(td-223.15,3.5) ) / pressao ); //razao de mistura wo = ws(Td,po), eq 5
     wss = ( 0.622 * ( A1 * pow(temperatura-223.15,3.5) ) / pressao ); //razao de mistura ws(To, po), eq 6
@@ -260,7 +261,7 @@ double Georgakakos(stationData stat, double pobs, int *iteracao)
     else
         ot = ((vp * X[*iteracao-1]) / (DELTA * zc * pow(GAMA,5))) * (F1 + F2 - 1);
 
-    /* X[iteração+1] = (umI - (Ob+Ot) * X[iteracao}) * dt;
+    /* X[iteraÃ§Ã£o+1] = (umI - (Ob+Ot) * X[iteracao}) * dt;
      * Se nao houver dados de radar, X[iteracao] usa os dados da estacao */
 
     if(VIL == -1) //Se nao houver dados de radar, X[iteracao] usa os dados da estacao
@@ -292,7 +293,7 @@ double Georgakakos(stationData stat, double pobs, int *iteracao)
     }
     P = P * dt; //valor acumulado em 7,5 min
 
-    printf("\n\nTemp. (K): %f || Umid.: %f || T. orvalho: %f || Prec. Ac.: %f || Prec. Obs.: N/A || massa X: %f || Zc: %f || Zt: %f || Topo Dos Ecos: N/A || Zb: %f || Pressao (atm): %f || Erro tetaE: %f || w0: %f || ws: %f || wt: %f || ps: %f || ts: %f || teta: %f || v: %f || Pt [pa]: %f || Tt[K]: %f || Teta E[K]: %f || Sai. Ob Geo.: %f \n\n", temperatura, ur, td, P, X[*iteracao], zc/1000, zt/1000, zb/1000, pressao, teta17-tetaE1, wo, wss, wst, ps, ts, teta, v, pt, tt, tetaE1, ob1);
+    //printf("\n\nTemp. (K): %f || Umid.: %f || T. orvalho: %f || Prec. Ac.: %f || Prec. Obs.: N/A || massa X: %f || Zc: %f || Zt: %f || Topo Dos Ecos: N/A || Zb: %f || Pressao (atm): %f || Erro tetaE: %f || w0: %f || ws: %f || wt: %f || ps: %f || ts: %f || teta: %f || v: %f || Pt [pa]: %f || Tt[K]: %f || Teta E[K]: %f || Sai. Ob Geo.: %f \n\n", temperatura, ur, td, P, X[*iteracao], zc/1000, zt/1000, zb/1000, pressao, teta17-tetaE1, wo, wss, wst, ps, ts, teta, v, pt, tt, tetaE1, ob1);
     return P;
     /*printf("\n v: %f // pt: %f // c: %f // tt: %f // teta17: %f // zc: %f // zb: %f // zt: %f // zt2: %f \n\n", *v, *pt, *c, *tt, *teta17, *zc, *zb, *zt, *zt2);
     ShowMessage("v[i]: " + AnsiString(v[i]) + " // pt[i]: " + AnsiString(pt[i]) + " // c[i]: " + AnsiString(c[i]) + " // Tt[i]: " + AnsiString(Tt[i]) + " // teta17[i]: " + AnsiString(teta17[i]) + " // Zc[i]: " + AnsiString(Zc[i]) + " // Zb[i]: " + AnsiString(Zb[i]) + " // Zt[i]: " + AnsiString(Zt[i]) + " // Zt2[i]: " + AnsiString(Zt2[i]));*/
