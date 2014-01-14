@@ -1,33 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <math.h>
-#include <time.h>
-#include "brain.h"
 #include "forecast.h"
-
-/// mudar #define para const int/float/double, etc..
-/// checar quais valores podem assumir quais tipos de variaveis
-/* CONSTANTES */
-#define PTRANSF 133.32231202221 // Utilizado para transformar pressao mmHg em Pa
-#define A1 0.0008 //A1 = 8.10^-4 Kg/(m.s2.k3,5)
-#define PN 100000 //Pressao nominal 10^5 Kg/(m.s2)
-#define A 2500000 //Constante da eq. (14) do calor latente A=2,5.10^6 J/Kg
-#define B 2380 //Constante da eq. (14) do calor latente B=2,38.10^3 J/(Kg.K)
-#define CP 1004 //Calor especifico à pressao constante cp=1004 J/(kg.K)
-#define DA 1 //Diferencial de área dA
-#define ALFA 3500 //3500 s-1
-#define TAST 273.15 //T* [ºK] eq 42
-#define PAST 101325 //p* [kg/(m*s2) eq 42
-#define C1 700000 //C1 [kg/(m3.s2)] pag 1593
-#define RV 461 //Constante dos gases para vapor de água [J/(kg.K)] pag 1592
-#define R 287 //J/(K.Kg)
-#define G 9.81 //Aceleração da gravidade m/s2
-#define K 0 //Considerado pag 1602
-#define GAMA 1
-//abstraídos: ifs de tempo/hora // linha/total_linha // altura // parametros de entrada
-
-typedef struct stationData stationData;
 
 float f(float T, float p)
 {
@@ -299,8 +270,6 @@ double Georgakakos(stationData stat, double pobs, int *iteracao)
     ShowMessage("v[i]: " + AnsiString(v[i]) + " // pt[i]: " + AnsiString(pt[i]) + " // c[i]: " + AnsiString(c[i]) + " // Tt[i]: " + AnsiString(Tt[i]) + " // teta17[i]: " + AnsiString(teta17[i]) + " // Zc[i]: " + AnsiString(Zc[i]) + " // Zb[i]: " + AnsiString(Zb[i]) + " // Zt[i]: " + AnsiString(Zt[i]) + " // Zt2[i]: " + AnsiString(Zt2[i]));*/
 }
 
-
-
 int PrecForecast(stationData *stat, double *pobs, int *iteracao)
 {
     double P;
@@ -308,7 +277,8 @@ int PrecForecast(stationData *stat, double *pobs, int *iteracao)
     /* Calculos de previsao */
     P = Georgakakos(*stat, *pobs, iteracao);
     //pobs: regressao e etc
-
+    printf("\n%f\n", P);
+    system("pause");
     /* Gera arquivo de saida para o SWMM */
     SaveResults(*stat, P);
 
