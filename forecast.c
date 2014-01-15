@@ -69,7 +69,7 @@ int SaveResults(stationData stat, double P)
     fclose(outFile);
 
     return 1;
-    // Abre (ou cria se n√£o houver) arquivo de saida em ASCII
+    // Abre (ou cria se n„o houver) arquivo de saida em ASCII
     // Vai ao fim do arquivo
     // Adiciona dados formatados para o SWMM no final do arquivo
     // Fecha arquivo
@@ -94,12 +94,12 @@ double Georgakakos(stationData stat, double pobs, int *iteracao)
     float pt;
     double wst;
     double teta; //temperatura potencial teta
-    float L; //Calor latente de condensa√ß√£o
+    float L; //Calor latente de condensaÁ„o
     double tetaE1;//temperatura potencial teta e
     float umI; //Entrada de umidade I
     float nv; //Adimensional de velocidade
     float vbeta; //Velocidade v beta
-    float c; //Inverso do di√¢metro m√©dio
+    float c; //Inverso do di‚metro mÈdio
     double dast; //D* [equacao 42]
     double P; //PWV (precipitacao acumulada?)
     double obs;
@@ -139,12 +139,16 @@ double Georgakakos(stationData stat, double pobs, int *iteracao)
     //Valores de entrada da interface: (na automatizacao deveriam ser carregados de um arquivo tipo "config.txt" por ex.)
     float v1 = 1.5; //V inicial, parametro de entrada
     float pl = 20000; //PL, parametro de entrada
-    float dt = 450; //delta t dos dados (em segundos). 450 = 7.5 min de intervalo de calculos
     double e1 = 0.00403;
     double e2 = 62725.067;
     double e3 = 0.95496;
     double e4 = 0.000288;
-    int limitVIL = 0; //se 1, desconsidera valores de VIL < 3 kg/m¬≤. [C99 nao suporta tipo boolean, mas limitVIL receberia 0 ou 1]
+    int limitVIL = 0; //se 1, desconsidera valores de VIL < 3 kg/m≤. [C99 nao suporta tipo boolean, mas limitVIL receberia 0 ou 1]
+    float dt; //delta t dos dados (em segundos). 450 = 7.5 min de intervalo de calculos
+
+    if(*iteracao%2 != 0) /* Se for iteracao impar, dt eh de 1800 segundos (30 minutos). */
+        dt = 1800;
+    else dt = 4200; /* Se for iteracao par, dt eh de 4200 segundos (70 minutos). */
 
     X[0] = 1; //x inicial
 
@@ -153,9 +157,9 @@ double Georgakakos(stationData stat, double pobs, int *iteracao)
     es = ( ur / 100 ) * (A1 * ( pow ( temperatura - 223.15, 3.5) ) ); // pow(x,3.15) == x^3.15
     td = pow((es/A1),(1/3.5))+223.15;
 
- /* [Avaliar o grau de satura√ß√£o do ar na superf√≠cie. Se w0 < wss o ar n√£o
-  * est√° saturado e a ascens√£o √© adiab√°tica, caso contr√°rio, desde a
-  * superf√≠cie a taxa de decaimento da temperatura √© pseudo adiab√°tica.] */
+ /* [Avaliar o grau de saturaÁ„o do ar na superfÌcie. Se w0 < wss o ar n„o
+  * est· saturado e a ascens„o È adiab·tica, caso contr·rio, desde a
+  * superfÌcie a taxa de decaimento da temperatura È pseudo adiab·tica.] */
 
     wo = ( 0.622 * ( A1 * pow(td-223.15,3.5) ) / pressao ); //razao de mistura wo = ws(Td,po), eq 5
     wss = ( 0.622 * ( A1 * pow(temperatura-223.15,3.5) ) / pressao ); //razao de mistura ws(To, po), eq 6
@@ -232,7 +236,7 @@ double Georgakakos(stationData stat, double pobs, int *iteracao)
     else
         ot = ((vp * X[*iteracao-1]) / (DELTA * zc * pow(GAMA,5))) * (F1 + F2 - 1);
 
-    /* X[itera√ß√£o+1] = (umI - (Ob+Ot) * X[iteracao}) * dt;
+    /* X[iteraÁ„o+1] = (umI - (Ob+Ot) * X[iteracao}) * dt;
      * Se nao houver dados de radar, X[iteracao] usa os dados da estacao */
 
     if(VIL == -1) //Se nao houver dados de radar, X[iteracao] usa os dados da estacao
@@ -262,7 +266,11 @@ double Georgakakos(stationData stat, double pobs, int *iteracao)
         else
             P = (X[*iteracao] / (DELTA * zc)) * vp * (1+0.75 * nv + pow(nv,2) * 0.25 + pow(nv,3) * 0.0416667 - pow(nd,3) * 0.0416667) / exp(nv);
     }
+    //printf("\nP: %f    dt: %f\n", P, dt);
+    //system("pause");
     P = P * dt; //valor acumulado em 7,5 min
+    //printf("\nP: %f\n", P);
+    //system("pause");
 
     //printf("\n\nTemp. (K): %f || Umid.: %f || T. orvalho: %f || Prec. Ac.: %f || Prec. Obs.: N/A || massa X: %f || Zc: %f || Zt: %f || Topo Dos Ecos: N/A || Zb: %f || Pressao (atm): %f || Erro tetaE: %f || w0: %f || ws: %f || wt: %f || ps: %f || ts: %f || teta: %f || v: %f || Pt [pa]: %f || Tt[K]: %f || Teta E[K]: %f || Sai. Ob Geo.: %f \n\n", temperatura, ur, td, P, X[*iteracao], zc/1000, zt/1000, zb/1000, pressao, teta17-tetaE1, wo, wss, wst, ps, ts, teta, v, pt, tt, tetaE1, ob1);
     return P;
@@ -277,8 +285,7 @@ int PrecForecast(stationData *stat, double *pobs, int *iteracao)
     /* Calculos de previsao */
     P = Georgakakos(*stat, *pobs, iteracao);
     //pobs: regressao e etc
-    printf("\n%f\n", P);
-    system("pause");
+
     /* Gera arquivo de saida para o SWMM */
     SaveResults(*stat, P);
 
