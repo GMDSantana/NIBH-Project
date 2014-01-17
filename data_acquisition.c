@@ -86,8 +86,8 @@ int LoadDBData(FILE *inFile, stationData *stat_F, double *pobs_F)
     stat_F->pressao = atof(pressao);
     *pobs_F = atof(pobs);
     // Printf apresentando os valores corretamente recebidos pelas variaveis.
-    printf("\nYear: %d, Date: %d, Time: %d, Temperatura: %.1f, Umidade: %.1f, Pressao: %.1f, Pobs: %.0f\n", stat_F->year, stat_F->date, stat_F->time, stat_F->temperatura, stat_F->umidade, stat_F->pressao, *pobs_F);
-    system("pause");
+   // printf("\nYear: %d, Date: %d, Time: %d, Temperatura: %.1f, Umidade: %.1f, Pressao: %.1f, Pobs: %.0f\n", stat_F->year, stat_F->date, stat_F->time, stat_F->temperatura, stat_F->umidade, stat_F->pressao, *pobs_F);
+   // system("pause");
     //radar, ifs..
     stat_F->topoDosEcos = -1;
     stat_F->VIL = -1;
@@ -105,7 +105,7 @@ FILE *DBConnect()
      * Quando (se) for por DB, colocar a conexao aqui. */
 
     FILE *estFile = NULL; // ponteiro para arquivo da estacao
-    char estFname[100] = "DATA085_275a277.dat"; // nome do arquivo da estacao
+    char estFname[100] = "data/DATA085_275a277.dat"; // nome do arquivo da estacao
 
     if( access(estFname, F_OK ) != -1 ) // Checa existencia do arquivo da estacao
     {

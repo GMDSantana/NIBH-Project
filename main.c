@@ -14,9 +14,9 @@ int main()
     float totalRainfall; /* Recebe do arquivo out do SWMM a precipitacao total. */
     float totalRunoff; /* Recebe do arquivo out do SWMM a escorrencia total. */
     float totalOutflow; /* Recebe do arquivo out do SWMM a vazao total de saida */
-    char inpFile[] = "FrutalTeste.inp"; /* Arquivo de entrada do SWMM. */
-    char rptFile[] = "FrutalTesteReport.rpt"; /* Arquivo de relatorio de execucao do SWMM. */
-    char outFile[] = "FrutalTesteOut.out"; /* Arquivo de saida do SWMM. */
+    char inpFile[] = "data/2010.inp"; /* Arquivo de entrada do SWMM. */
+    char rptFile[] = "data/2010.rpt"; /* Arquivo de relatorio de execucao do SWMM. */
+    char outFile[] = "data/2010.out"; /* Arquivo de saida do SWMM. */
     FILE *DBConn; // Arquivo .dat de entrada com dados da estacao
     int iteracao = 1; // = "linha" do original. Iteracao = 1 -> realiza os calculos em cima de uma linha de dados. Iteracao = 2 -> realiza calculos 2a vez...
     double pobs; // Precipitacao observada
@@ -74,7 +74,7 @@ int main()
     }
     remove(rptFile);
     remove(outFile);
-    remove("precOutSample.dat");
+    remove("data/precOutSample.dat");
 
     return 0;
 }

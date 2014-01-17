@@ -54,7 +54,7 @@ int SaveResults(stationData stat, double P)
     minutes = stat.time%100;
     hours = stat.time/100;
 
-    if( (outFile = fopen("precOutSample.dat", "a")) == NULL)
+    if( (outFile = fopen("data/precOutSample.dat", "a")) == NULL)
     {
         printf("Erro ao abrir o arquivo de saida.\n");
         return 0;
