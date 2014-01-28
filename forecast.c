@@ -1,5 +1,9 @@
 #include "forecast.h"
 
+static float past_temperatures[4] = {0, 0, 0, 0}; /* Os 4 valores anteriores de temperatura. */
+static float past_humidities[4] = {0, 0, 0, 0}; /* Os 4 valores anteriores de humidade. */
+static float past_pressures[4] = {0, 0, 0, 0}; /* Os 4 valores anteriores de pressao. */
+
 float f(float T, float p)
 {
     float pt, p1, p2, p3, res;

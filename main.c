@@ -1,5 +1,6 @@
 #include <stdio.h> /* FILE, printf */
 
+#include "calculation.h"
 #include "data_acquisition.h" /* stationData, DBConnect, LoadDBData */
 #include "forecast.h" /* PrecForecast */
 #include "swmm_interfacing.h" /* RunSwmmDll */
@@ -17,26 +18,26 @@ int main()
     char inpFile[] = "data/2010.inp"; /* Arquivo de entrada do SWMM. */
     char rptFile[] = "data/2010.rpt"; /* Arquivo de relatorio de execucao do SWMM. */
     char outFile[] = "data/2010.out"; /* Arquivo de saida do SWMM. */
-    FILE *DBConn; // Arquivo .dat de entrada com dados da estacao
-    int iteracao = 1; // = "linha" do original. Iteracao = 1 -> realiza os calculos em cima de uma linha de dados. Iteracao = 2 -> realiza calculos 2a vez...
-    double pobs; // Precipitacao observada
-    stationData stat; // Struct stationData com os dados da estacao
+    FILE *DBConn; /* Arquivo .dat de entrada com dados da estacao. */
+    int iteracao = 1; /* = "linha" do original. Iteracao = 1 -> realiza os calculos em cima de uma linha de dados. Iteracao = 2 -> realiza calculos 2a vez... */
+    double pobs; /* Precipitacao observada. */
+    stationData stat;  /* Struct stationData com os dados da estacao. */
 
-    // --- ESTABELECE CONEXAO COM O "DB" (arquivo)
+    /* ESTABELECE CONEXAO COM O "DB" (arquivo). */
     DBConn = DBConnect();
-    if (DBConn == NULL) // Erro
+    if (DBConn == NULL) /* Erro. */
     {
         printf("\nErro no retorno da conexao com <banco>\n");
         return 1;
     }
 
-    // --- CARREGA DADOS DO BANCO (arquivo) NAS VARIAVEIS E CHAMA PREVISAO DE PRECIPITACAO
+    /* CARREGA DADOS DO BANCO (arquivo) NAS VARIAVEIS E CHAMA PREVISAO DE PRECIPITACAO. */
     while ( ( LoadDBData(DBConn, &stat, &pobs) ) == 0 )
     {
         PrecForecast(&stat, &pobs, &iteracao);
     }
 
-    // --- CHECAGEM E UTILIZACAO DE DADOS VGI
+    /* CHECAGEM E UTILIZACAO DE DADOS VGI. */
     // VGICheck();
 
     /* Execucao do SWMM. */

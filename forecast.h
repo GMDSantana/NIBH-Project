@@ -6,6 +6,7 @@
 #include <stdlib.h> /* system */
 #include <time.h> /* mktime, time, tm */
 
+#include "calculation.h"
 #include "data_acquisition.h" /* stationData */
 
 /// mudar #define para const int/float/double, etc..
