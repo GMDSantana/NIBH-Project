@@ -8,13 +8,13 @@
 /* *******************************
  *             MAIN              *
  *********************************/
-int main()
+int main(int argc, char *argv[])
 {
-    int i; /* Iterador para for. */
+    int i, j; /* Iteradores para for. */
     int r; /* Retorno das funcoes (representa codigo de erro ou sucesso). */
     float totalRainfall; /* Recebe do arquivo out do SWMM a precipitacao total. */
-    float totalRunoff; /* Recebe do arquivo out do SWMM a escorrencia total. */
-    float totalOutflow; /* Recebe do arquivo out do SWMM a vazao total de saida */
+    float depth; /* Recebe do arquivo out do SWMM o nivel da agua na juncao. */
+    float flow; /* Recebe do arquivo out do SWMM a vazao no conduit. */
     char inpFile[] = "data/2010.inp"; /* Arquivo de entrada do SWMM. */
     char rptFile[] = "data/2010.rpt"; /* Arquivo de relatorio de execucao do SWMM. */
     char outFile[] = "data/2010.out"; /* Arquivo de saida do SWMM. */
@@ -22,6 +22,8 @@ int main()
     int iteracao = 1; /* = "linha" do original. Iteracao = 1 -> realiza os calculos em cima de uma linha de dados. Iteracao = 2 -> realiza calculos 2a vez... */
     double pobs; /* Precipitacao observada. */
     stationData stat;  /* Struct stationData com os dados da estacao. */
+
+    //return UpdateInitFlow(inpFile, "L-50", 15);
 
     /* ESTABELECE CONEXAO COM O "DB" (arquivo). */
     DBConn = DBConnect();
@@ -32,7 +34,7 @@ int main()
     }
 
     /* CARREGA DADOS DO BANCO (arquivo) NAS VARIAVEIS E CHAMA PREVISAO DE PRECIPITACAO. */
-    while ( ( LoadDBData(DBConn, &stat, &pobs) ) == 0 )
+    while((LoadDBData(DBConn, &stat, &pobs)) == 0)
     {
         PrecForecast(&stat, &pobs, &iteracao);
     }
@@ -60,15 +62,18 @@ int main()
             }
             else
             {
-                printf("\nPeriodo    Precipitacao   Escorrencia   Vazao");
-                printf("\nde Tempo   Total          Total         Total");
-                printf("\n==============================================");
-                for (i = 1; i <= SWMM_Nperiods; i++)
+                printf("\nPeriodo    No ou Precipitacao   Altura        Vazao");
+                printf("\nde Tempo   Link  Total          Total         Total");
+                printf("\n===================================================");
+                for(i = 1; i <= SWMM_Nperiods; i++)
                 {
-                    GetSwmmResult(3, 0, 1, i, &totalRainfall);
-                    GetSwmmResult(3, 0, 4, i, &totalRunoff);
-                    GetSwmmResult(3, 0, 11, i, &totalOutflow);
-                    printf("\n%6d    %8.2f       %8.2f    %8.2f", i, totalRainfall, totalRunoff, totalOutflow);
+                    for(j = 0; j < 182; j++)
+                    {
+                        GetSwmmResult(3, 0, 1, i, &totalRainfall);
+                        GetSwmmResult(2, j, 1, i, &depth);
+                        GetSwmmResult(2, j, 0, i, &flow);
+                        printf("\n%6d  %6d %8.2f      %8.2f     %8.2f", i, j + 1, totalRainfall, depth, flow);
+                    }
                 }
                 CloseSwmmOutFile();
             }

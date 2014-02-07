@@ -234,3 +234,137 @@ void CloseSwmmOutFile(void)
         Fout = NULL;
     }
 }
+
+int UpdateInitFlow(char *inpFile, char *link, double value)
+{
+    int i;
+    char c;
+    char line[300];
+    int found = 0;
+    int length = (int)strlen(link);
+    FILE *inp = fopen(inpFile, "a+");
+    FILE *aux = fopen("data/auxiliary.txt", "w+");
+
+    if(inp == NULL)
+        return 2;
+    if(aux == NULL)
+        return 3;
+
+    while(fgets(line, 11, inp) && found == 0)
+    {
+        if(strcmp(line, "[CONDUITS]") == 0)
+            found = 1;
+        fputs(line, aux);
+    }
+    found = 0;
+    fputs("\n", aux);
+
+    while(fgets(line, length + 1, inp) && found == 0)
+    {
+        if(strcmp(line, link) == 0)
+            found = 1;
+        fputs(line, aux);
+    }
+
+    for(i = 0; i < length; i++)
+        fputc(' ', aux);
+
+    for(i = 0; i < 92 - length - (length - 3); i++)
+    {
+        c = fgetc(inp);
+        fputc(c, aux);
+    }
+
+    fprintf(aux, "%.2f", value);
+
+    do
+        c = fgetc(inp);
+    while(c != ' ');
+
+    fputc(' ', aux);
+
+    while(fgets(line, 200, inp))
+        fputs(line, aux);
+
+    fclose(inp);
+    fclose(aux);
+
+    inp = fopen(inpFile, "w+");
+    aux = fopen("data/auxiliary.txt", "a+");
+
+    while(fgets(line, 200, aux))
+        fputs(line, inp);
+
+    fclose(inp);
+    fclose(aux);
+    remove("data/auxiliary.txt");
+
+    return 0;
+}
+
+int UpdateInitDepth(char *inpFile, char *node, double value)
+{
+    int i;
+    char c;
+    char line[300];
+    int found = 0;
+    int length = (int)strlen(node);
+    FILE *inp = fopen(inpFile, "a+");
+    FILE *aux = fopen("data/auxiliary.txt", "w+");
+
+    if(inp == NULL)
+        return 2;
+    if(aux == NULL)
+        return 3;
+
+    while(fgets(line, 12, inp) && found == 0)
+    {
+        if(strcmp(line, "[JUNCTIONS]") == 0)
+            found = 1;
+        fputs(line, aux);
+    }
+    found = 0;
+    fputs("\n", aux);
+
+    while(fgets(line, length + 1, inp) && found == 0)
+    {
+        if(strcmp(line, node) == 0)
+            found = 1;
+        fputs(line, aux);
+    }
+
+    for(i = 0; i < length; i++)
+        fputc(' ', aux);
+
+    for(i = 0; i < 36 - length - (length - 3); i++)
+    {
+        c = fgetc(inp);
+        fputc(c, aux);
+    }
+
+    fprintf(aux, "%.1f", value);
+
+    do
+        c = fgetc(inp);
+    while(c != ' ');
+
+    fputc(' ', aux);
+
+    while(fgets(line, 200, inp))
+        fputs(line, aux);
+
+    fclose(inp);
+    fclose(aux);
+
+    inp = fopen(inpFile, "w+");
+    aux = fopen("data/auxiliary.txt", "a+");
+
+    while(fgets(line, 200, aux))
+        fputs(line, inp);
+
+    fclose(inp);
+    fclose(aux);
+    remove("datas/auxiliary.txt");
+
+    return 0;
+}

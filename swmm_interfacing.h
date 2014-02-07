@@ -6,6 +6,7 @@
 #define SWMM_INTERFACING_H
 
 #include <stdio.h>
+#include <string.h>
 #include <windows.h>
 #include "swmm5.h"
 
@@ -33,5 +34,9 @@ int    GetSwmmResult(int iType, int iIndex, int vIndex, int period, float *value
 
 /* Fecha arquivo de saida do SWMM. */
 void   CloseSwmmOutFile(void);
+
+int UpdateInitFlow(char *inpFile, char *link, double value);
+
+int UpdateInitDepth(char *inpFile, char *link, double value);
 
 #endif /* SWMM_INTERFACING_H */
